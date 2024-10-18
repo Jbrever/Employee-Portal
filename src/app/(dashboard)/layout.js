@@ -12,14 +12,20 @@ import {
 
 const menuOptions = [
   { label: 'Dashboard', icon: faTachometerAlt, url: '/dashboard' },
-  { label: 'Profile', icon: faUser, url: '/profile' },
+  { label: 'Profile', icon: faUser, url: '#', hasDropdown: true },
   { label: 'Leaves', icon: faClipboardList, url: '/leaves' },
   { label: 'Logout', icon: faSignOutAlt, url: '/' },
+];
+
+const profileDropdownOptions = [
+  { label: 'View Profile', url: '/profile' },
+  { label: 'Attrition', url: '/attritions' },
 ];
 
 export default function RootLayout({ children }) {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [currentPath, setCurrentPath] = useState('');
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   useEffect(() => {
     setCurrentPath(window.location.pathname);
@@ -60,6 +66,45 @@ export default function RootLayout({ children }) {
         <nav className="px-3 mt-6 space-y-1">
           {menuOptions.map((option, index) => {
             const isActive = currentPath === option.url;
+
+            if (option.hasDropdown) {
+              return (
+                <div key={index}>
+                  <a
+                    href={option.url}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsProfileDropdownOpen(!isProfileDropdownOpen);
+                    }}
+                    className={`
+                      flex items-center px-4 py-3 text-sm rounded-lg
+                      transition-all duration-200 group
+                      ${isActive ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}
+                    `}
+                  >
+                    <FontAwesomeIcon 
+                      icon={option.icon} 
+                      className={`w-5 h-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                    />
+                    <span className="font-medium">{option.label}</span>
+                  </a>
+                  {isProfileDropdownOpen && (
+                    <div className="ml-6 mt-2 bg-gray-700 rounded-lg">
+                      {profileDropdownOptions.map((dropdownOption, dropdownIndex) => (
+                        <a
+                          key={dropdownIndex}
+                          href={dropdownOption.url}
+                          className={`block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white`}
+                        >
+                          {dropdownOption.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <a
                 key={index}
@@ -67,17 +112,12 @@ export default function RootLayout({ children }) {
                 className={`
                   flex items-center px-4 py-3 text-sm rounded-lg
                   transition-all duration-200 group
-                  ${isActive 
-                    ? 'bg-blue-600 text-white' 
-                    : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}
+                  ${isActive ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}
                 `}
               >
                 <FontAwesomeIcon 
                   icon={option.icon} 
-                  className={`
-                    w-5 h-5 mr-3 transition-transform duration-200
-                    ${isActive ? 'scale-110' : 'group-hover:scale-110'}
-                  `}
+                  className={`w-5 h-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
                 />
                 <span className="font-medium">{option.label}</span>
               </a>
@@ -117,9 +157,9 @@ export default function RootLayout({ children }) {
         </header>
 
         {/* Page Content */}
-     <div className='d-flex justify-center'>
-      {children}
-     </div>
+        <div className='d-flex justify-center'>
+          {children}
+        </div>
       </main>
     </div>
   );
