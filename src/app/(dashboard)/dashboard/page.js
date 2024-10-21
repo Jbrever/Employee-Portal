@@ -1,163 +1,266 @@
-'use client'
-import { useState } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, PieChart, Pie, Cell
-} from 'recharts';
-import { 
-  Users, UserPlus, UserMinus, DollarSign, 
-  Building, ChevronDown, Search, Bell
-} from 'lucide-react';
-import {
-  Card,
-  
-  CardHeader,
-  CardTitle,
-  Table, // Import Table here
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "react-bootstrap";
+'use client';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Users, Bell, Briefcase, Calendar } from 'lucide-react';
+import { Card, Badge, Container, Row, Col } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const employeeData = [
-  { month: 'Jan', hired: 12, left: 5 },
-  { month: 'Feb', hired: 15, left: 8 },
-  { month: 'Mar', hired: 18, left: 6 },
-  { month: 'Apr', hired: 14, left: 7 },
-  { month: 'May', hired: 21, left: 9 },
-  { month: 'Jun', hired: 25, left: 10 },
-];
+export default function EmployeeDashboard({ employeeName }) {
+  const employees = [
+    { id: 1, name: 'John Doe', department: 'Engineering', email: 'john@example.com' },
+    { id: 2, name: 'Jane Smith', department: 'Marketing', email: 'jane@example.com' },
+  ];
 
-const departmentData = [
-  { department: 'Engineering', count: 45 },
-  { department: 'Sales', count: 30 },
-  { department: 'Marketing', count: 25 },
-  { department: 'HR', count: 15 },
-];
+  const notices = [
+    'Team meeting on Friday at 3 PM.',
+    'Project deadline extended by one week.',
+  ];
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+  const projects = [
+    { id: 1, name: 'Project A', startDate: '2023-01-01', endDate: '2023-12-31', assignedTo: 'John Doe', status: 'In Progress' },
+    { id: 2, name: 'Project B', startDate: '2023-06-01', endDate: '2023-11-30', assignedTo: 'Jane Smith', status: 'Completed' },
+  ];
 
-const recentEmployees = [
-  { id: 1, name: 'John Doe', department: 'Engineering', status: 'Active', joinDate: '2024-03-15' },
-  { id: 2, name: 'Jane Smith', department: 'Marketing', status: 'Active', joinDate: '2024-03-10' },
-  { id: 3, name: 'Mike Johnson', department: 'Sales', status: 'On Leave', joinDate: '2024-03-05' },
-  { id: 4, name: 'Sarah Williams', department: 'HR', status: 'Active', joinDate: '2024-02-28' },
-];
-
-export default function Dashboard() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const leaves = [
+    { id: 1, name: 'Alice Johnson', startDate: '2023-10-20', endDate: '2023-10-25' },
+    { id: 2, name: 'Bob Brown', startDate: '2023-10-28', endDate: '2023-10-30' },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 container-fluid">
- 
+    <Container fluid className="p-5 bg-gray-100">
+      <WelcomeCard name={employeeName} />
+      
+      <Row className="mt-4">
+        <Col md={8}>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Card className="shadow-sm rounded-lg">
+              <Card.Header className="bg-white border-bottom">
+                <div className="d-flex align-items-center">
+                  <Users className="text-primary me-2" size={24} />
+                  <Card.Title className="mb-0">Employee Directory</Card.Title>
+                </div>
+              </Card.Header>
+              <Card.Body>
+                <EmployeeTable employees={employees} />
+              </Card.Body>
+            </Card>
+          </motion.div>
+        </Col>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card>
-          <div className="flex items-center p-6">
-            <div className="p-2 bg-blue-100 rounded-full mr-4">
-              <Users className="h-6 w-6 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Total Employees</p>
-              <h3 className="text-2xl font-bold">115</h3>
-            </div>
-          </div>
-        </Card>
+        <Col md={4}>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <Card className="shadow-sm rounded-lg">
+              <Card.Header className="bg-white border-bottom">
+                <div className="d-flex align-items-center">
+                  <Bell className="text-warning me-2" size={24} />
+                  <Card.Title className="mb-0">Notices</Card.Title>
+                </div>
+              </Card.Header>
+              <Card.Body>
+                <ul className="list-unstyled">
+                  {notices.map((notice, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="d-flex align-items-start mb-3"
+                    >
+                      <Bell className="text-primary me-2 mt-1" size={16} />
+                      <span>{notice}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </Card.Body>
+            </Card>
+          </motion.div>
+        </Col>
+      </Row>
 
-        <Card>
-          <div className="flex items-center p-6">
-            <div className="p-2 bg-green-100 rounded-full mr-4">
-              <UserPlus className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">New Hires</p>
-              <h3 className="text-2xl font-bold">25</h3>
-            </div>
-          </div>
-        </Card>
+      <Row className="mt-4">
+        <Col md={6}>
+          <Card className="shadow-sm rounded-lg">
+            <Card.Header className="bg-white border-bottom">
+              <div className="d-flex align-items-center">
+                <Briefcase className="text-purple me-2" size={24} />
+                <Card.Title className="mb-0">Active Projects</Card.Title>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <ProjectTable projects={projects} />
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <Card>
-          <div className="flex items-center p-6">
-            <div className="p-2 bg-red-100 rounded-full mr-4">
-              <UserMinus className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Turnover Rate</p>
-              <h3 className="text-2xl font-bold">8.5%</h3>
-            </div>
-          </div>
-        </Card>
+        <Col md={6}>
+          <Card className="shadow-sm rounded-lg">
+            <Card.Header className="bg-white border-bottom">
+              <div className="d-flex align-items-center">
+                <Calendar className="text-success me-2" size={24} />
+                <Card.Title className="mb-0">Upcoming Leaves</Card.Title>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <LeaveTable leaves={leaves} />
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
+  );
+}
 
-        <Card>
-          <div className="flex items-center p-6">
-            <div className="p-2 bg-purple-100 rounded-full mr-4">
-              <Building className="h-6 w-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-500">Departments</p>
-              <h3 className="text-2xl font-bold">4</h3>
-            </div>
-          </div>
-        </Card>
+function EmployeeTable({ employees }) {
+  const [sortField, setSortField] = useState('name');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const sortedEmployees = [...employees].sort((a, b) => {
+    if (sortDirection === 'asc') {
+      return a[sortField] > b[sortField] ? 1 : -1;
+    }
+    return a[sortField] < b[sortField] ? 1 : -1;
+  });
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = sortedEmployees.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  return (
+    <div>
+      <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-blue-600 text-white">
+          <tr>
+            <th className="px-6 py-3 text-left text-sm font-medium">
+              <button 
+                onClick={() => handleSort('name')}
+                className="text-white focus:outline-none"
+              >
+                Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+              </button>
+            </th>
+            <th className="px-6 py-3">Department</th>
+            <th className="px-6 py-3">Email</th>
+          </tr>
+        </thead>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {currentItems.map(emp => (
+            <tr key={emp.id} className="hover:bg-gray-100 transition duration-200">
+              <td className="px-6 py-4">{emp.name}</td>
+              <td className="px-6 py-4">
+                <Badge className="bg-gray-300 text-gray-800">{emp.department}</Badge>
+              </td>
+              <td className="px-6 py-4">{emp.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          className="px-4 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white"
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        <button
+          className="px-4 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white"
+          onClick={() => setCurrentPage(prev => prev + 1)}
+          disabled={indexOfLastItem >= employees.length}
+        >
+          Next
+        </button>
       </div>
-
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Employee Growth</CardTitle>
-          </CardHeader>
-          <div>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={employeeData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="hired" stroke="#0088FE" name="Hired" />
-                  <Line type="monotone" dataKey="left" stroke="#FF8042" name="Left" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Department Distribution</CardTitle>
-          </CardHeader>
-          <div>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={departmentData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="count"
-                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  >
-                    {departmentData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Recent Employees Table */}
-
     </div>
+  );
+}
+
+function ProjectTable({ projects }) {
+  return (
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-blue-600 text-white">
+        <tr>
+          <th className="px-6 py-3">Project</th>
+          <th className="px-6 py-3">Status</th>
+          <th className="px-6 py-3">Assigned To</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {projects.map(project => (
+          <tr key={project.id} className="hover:bg-gray-100 transition duration-200">
+            <td className="px-6 py-4">{project.name}</td>
+            <td className="px-6 py-4">
+              <Badge className={`text-white ${project.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`}>
+                {project.status}
+              </Badge>
+            </td>
+            <td className="px-6 py-4">{project.assignedTo}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function LeaveTable({ leaves }) {
+  return (
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-blue-600 text-white">
+        <tr>
+          <th className="px-6 py-3">Employee</th>
+          <th className="px-6 py-3">Duration</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {leaves.map(leave => (
+          <tr key={leave.id} className="hover:bg-gray-100 transition duration-200">
+            <td className="px-6 py-4">{leave.name}</td>
+            <td className="px-6 py-4">{leave.startDate} - {leave.endDate}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function WelcomeCard({ name }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="bg-primary text-white shadow-md rounded-lg">
+        <Card.Body className="d-flex justify-content-between align-items-center">
+          <div>
+            <h2 className="mb-2 text-lg font-semibold">Welcome back, {name}! 👋</h2>
+            <p className="mb-0 opacity-75">Here's what's happening in your workplace today</p>
+          </div>
+          <div className="d-none d-md-block">
+            <div className="rounded-circle bg-white bg-opacity-10 p-4">
+              <Users size={32} />
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+    </motion.div>
   );
 }
