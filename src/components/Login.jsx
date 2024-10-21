@@ -1,7 +1,9 @@
-'use client'
+'use client';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import {apiHandler} from '@/_services/services_api'
+
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -9,7 +11,8 @@ const LoginForm = () => {
     password: ''
   });
   const [errors, setErrors] = useState({});
-const router = useRouter()
+  const router = useRouter();
+
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) {
@@ -27,8 +30,10 @@ const router = useRouter()
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      router.push('/dashboard')
-      // Handle login logic here
+      // localStorage.setItem('isLoggedIn', true);
+
+      apiHandler(formData)
+      router.push('/dashboard');
       console.log('Form submitted:', formData);
     }
   };
@@ -179,6 +184,19 @@ const router = useRouter()
             >
               Sign In
             </motion.button>
+
+            {/* Sign Up Link */}
+            <div className="text-center text-gray-300 text-sm">
+              <p>
+                Don't have an account?{' '}
+                <button 
+                  onClick={() => router.push('/signup')} 
+                  className="text-blue-400 hover:text-blue-300 font-semibold"
+                >
+                  Sign Up
+                </button>
+              </p>
+            </div>
 
             <div className="text-center text-gray-300 text-sm">
               Need help? Contact your system administrator

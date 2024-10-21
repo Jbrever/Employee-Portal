@@ -8,3 +8,13 @@ export async function apiHandler(params) {
     return null;
   }
 }
+
+
+export async function signUpApi(params) {
+  try {
+    const response = await fetcher('POST', process.env.SIGNUP_API, params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}

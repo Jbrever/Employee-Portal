@@ -16,15 +16,15 @@ function generateHeaders(contentType = 'application/json') {
   return { headers };
 }
 
-async function makeRequest(method, url, params, contentType = 'application/json') {
+async function makeRequest(method, url, params, ) {
   try {
-    const headers = generateHeaders(contentType);
+    // const headers = generateHeaders(contentType);
 
     if (method === 'GET') {
-      const response = await Axios.get(`${API_BASE_URL}${url}`, { ...headers, params });
+      const response = await Axios.get(`${API_BASE_URL}${url}`, params );
       return handleResponse(response.data);
     } else {
-      const response = await Axios.post(`${API_BASE_URL}${url}`, params, headers);
+      const response = await Axios.post(`${API_BASE_URL}${url}`, params);
       return handleResponse(response.data);
     }
   } catch (error) {
