@@ -2,13 +2,28 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Bell, Briefcase, Calendar } from 'lucide-react';
-import { Card, Badge, Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import {LeaveTable,PrrojectTable,UserTable} from '@/components/utils/table'
 
-export default function EmployeeDashboard({ employeeName }) {
+function EmployeeDashboard({ employeeName }) {
+  const [showPasswordModal, setShowPasswordModal] = useState(true);
+
+  const handleCloseModal = () => {
+    setShowPasswordModal(false);
+  };
+
+  const handleChangePassword = (e) => {
+    e.preventDefault();
+    // Implement password change logic here
+    handleCloseModal();
+  };
+
   const employees = [
     { id: 1, name: 'John Doe', department: 'Engineering', email: 'john@example.com' },
     { id: 2, name: 'Jane Smith', department: 'Marketing', email: 'jane@example.com' },
+    { id: 3, name: 'Alice Johnson', department: 'Sales', email: 'alice@example.com' },
+    { id: 4, name: 'Bob Brown', department: 'HR', email: 'bob@example.com' },
   ];
 
   const notices = [
@@ -29,238 +44,116 @@ export default function EmployeeDashboard({ employeeName }) {
   return (
     <Container fluid className="p-5 bg-gray-100">
       <WelcomeCard name={employeeName} />
-      
+
+      <Modal show={showPasswordModal} onHide={handleCloseModal} backdrop="static" keyboard={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Change Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={handleChangePassword}>
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label">New Password</label>
+              <input type="password" className="form-control" id="newPassword" required />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
+              <input type="password" className="form-control" id="confirmPassword" required />
+            </div>
+            <Button variant="primary" type="submit">Change Password</Button>
+          </form>
+        </Modal.Body>
+      </Modal>
+
       <Row className="mt-4">
         <Col md={8}>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="shadow-sm rounded-lg">
-              <Card.Header className="bg-white border-bottom">
-                <div className="d-flex align-items-center">
-                  <Users className="text-primary me-2" size={24} />
-                  <Card.Title className="mb-0">Employee Directory</Card.Title>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <div className="shadow-sm rounded-lg overflow-hidden">
+              <div className="bg-[#168aad] text-white p-3">
+                <div className="flex items-center">
+                  <Users className="text-white mr-2" size={24} />
+                  <h5 className="font-semibold mb-0">Employee List</h5>
                 </div>
-              </Card.Header>
-              <Card.Body>
-                <EmployeeTable employees={employees} />
-              </Card.Body>
-            </Card>
+              </div>
+              <div className="p-4">
+                <UserTable data={employees} />
+              </div>
+            </div>
           </motion.div>
         </Col>
 
         <Col md={4}>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="shadow-sm rounded-lg">
-              <Card.Header className="bg-white border-bottom">
-                <div className="d-flex align-items-center">
-                  <Bell className="text-warning me-2" size={24} />
-                  <Card.Title className="mb-0">Notices</Card.Title>
+          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+            <div className="shadow-sm rounded-lg h-full overflow-hidden">
+              <div className="bg-[#f7b801] text-white p-3">
+                <div className="flex items-center">
+                  <Bell className="text-white mr-2" size={24} />
+                  <h5 className="font-semibold mb-0">Notices</h5>
                 </div>
-              </Card.Header>
-              <Card.Body>
-                <ul className="list-unstyled">
+              </div>
+              <div className="p-4">
+                <ul className="list-none">
                   {notices.map((notice, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="d-flex align-items-start mb-3"
-                    >
-                      <Bell className="text-primary me-2 mt-1" size={16} />
+                    <motion.li key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }} className="flex items-start mb-3">
+                      <Bell className="text-blue-500 mr-2" size={16} />
                       <span>{notice}</span>
                     </motion.li>
                   ))}
                 </ul>
-              </Card.Body>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         </Col>
       </Row>
 
       <Row className="mt-4">
         <Col md={6}>
-          <Card className="shadow-sm rounded-lg">
-            <Card.Header className="bg-white border-bottom">
-              <div className="d-flex align-items-center">
-                <Briefcase className="text-purple me-2" size={24} />
-                <Card.Title className="mb-0">Active Projects</Card.Title>
+          <div className="shadow-sm rounded-lg h-full overflow-hidden">
+            <div className="bg-[#168aad] text-white p-3">
+              <div className="flex items-center">
+                <Briefcase className="text-white mr-2" size={24} />
+                <h5 className="font-semibold mb-0">Active Projects</h5>
               </div>
-            </Card.Header>
-            <Card.Body>
-              <ProjectTable projects={projects} />
-            </Card.Body>
-          </Card>
+            </div>
+            <div className="p-4">
+              <PrrojectTable data={projects} />
+            </div>
+          </div>
         </Col>
 
         <Col md={6}>
-          <Card className="shadow-sm rounded-lg">
-            <Card.Header className="bg-white border-bottom">
-              <div className="d-flex align-items-center">
-                <Calendar className="text-success me-2" size={24} />
-                <Card.Title className="mb-0">Upcoming Leaves</Card.Title>
+          <div className="shadow-sm rounded-lg h-full overflow-hidden">
+            <div className="bg-[#84a98c] text-white p-3">
+              <div className="flex items-center">
+                <Calendar className="text-white mr-2" size={24} />
+                <h5 className="font-semibold mb-0">Upcoming Leaves</h5>
               </div>
-            </Card.Header>
-            <Card.Body>
-              <LeaveTable leaves={leaves} />
-            </Card.Body>
-          </Card>
+            </div>
+            <div className="p-4">
+              <LeaveTable data={leaves} />
+            </div>
+          </div>
         </Col>
       </Row>
     </Container>
   );
 }
 
-function EmployeeTable({ employees }) {
-  const [sortField, setSortField] = useState('name');
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const sortedEmployees = [...employees].sort((a, b) => {
-    if (sortDirection === 'asc') {
-      return a[sortField] > b[sortField] ? 1 : -1;
-    }
-    return a[sortField] < b[sortField] ? 1 : -1;
-  });
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = sortedEmployees.slice(indexOfFirstItem, indexOfLastItem);
-
-  const handleSort = (field) => {
-    if (field === sortField) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDirection('asc');
-    }
-  };
-
-  return (
-    <div>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-blue-600 text-white">
-          <tr>
-            <th className="px-6 py-3 text-left text-sm font-medium">
-              <button 
-                onClick={() => handleSort('name')}
-                className="text-white focus:outline-none"
-              >
-                Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
-              </button>
-            </th>
-            <th className="px-6 py-3">Department</th>
-            <th className="px-6 py-3">Email</th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {currentItems.map(emp => (
-            <tr key={emp.id} className="hover:bg-gray-100 transition duration-200">
-              <td className="px-6 py-4">{emp.name}</td>
-              <td className="px-6 py-4">
-                <Badge className="bg-gray-300 text-gray-800">{emp.department}</Badge>
-              </td>
-              <td className="px-6 py-4">{emp.email}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="flex justify-end gap-2 mt-4">
-        <button
-          className="px-4 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white"
-          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-        >
-          Previous
-        </button>
-        <button
-          className="px-4 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-500 hover:text-white"
-          onClick={() => setCurrentPage(prev => prev + 1)}
-          disabled={indexOfLastItem >= employees.length}
-        >
-          Next
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ProjectTable({ projects }) {
-  return (
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-blue-600 text-white">
-        <tr>
-          <th className="px-6 py-3">Project</th>
-          <th className="px-6 py-3">Status</th>
-          <th className="px-6 py-3">Assigned To</th>
-        </tr>
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {projects.map(project => (
-          <tr key={project.id} className="hover:bg-gray-100 transition duration-200">
-            <td className="px-6 py-4">{project.name}</td>
-            <td className="px-6 py-4">
-              <Badge className={`text-white ${project.status === 'Completed' ? 'bg-green-500' : 'bg-blue-500'}`}>
-                {project.status}
-              </Badge>
-            </td>
-            <td className="px-6 py-4">{project.assignedTo}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-function LeaveTable({ leaves }) {
-  return (
-    <table className="min-w-full divide-y divide-gray-200">
-      <thead className="bg-blue-600 text-white">
-        <tr>
-          <th className="px-6 py-3">Employee</th>
-          <th className="px-6 py-3">Duration</th>
-        </tr>
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {leaves.map(leave => (
-          <tr key={leave.id} className="hover:bg-gray-100 transition duration-200">
-            <td className="px-6 py-4">{leave.name}</td>
-            <td className="px-6 py-4">{leave.startDate} - {leave.endDate}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
 function WelcomeCard({ name }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <Card className="bg-primary text-white shadow-md rounded-lg">
-        <Card.Body className="d-flex justify-content-between align-items-center">
-          <div>
-            <h2 className="mb-2 text-lg font-semibold">Welcome back, {name}! 👋</h2>
-            <p className="mb-0 opacity-75">Here's what's happening in your workplace today</p>
+    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="bg-[#134074] text-white shadow-lg rounded-lg p-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold">Welcome back, {name}! 👋</h2>
+          <p className="mb-1 opacity-75">Here's what's happening in your workplace today:</p>
+        </div>
+        <div className="hidden md:block">
+          <div className="bg-white bg-opacity-10 rounded-full p-4">
+            <Users size={32} />
           </div>
-          <div className="d-none d-md-block">
-            <div className="rounded-circle bg-white bg-opacity-10 p-4">
-              <Users size={32} />
-            </div>
-          </div>
-        </Card.Body>
-      </Card>
+        </div>
+      </div>
     </motion.div>
   );
 }
+
+export default EmployeeDashboard;

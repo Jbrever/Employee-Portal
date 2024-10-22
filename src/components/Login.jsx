@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import {apiHandler} from '@/_services/services_api'
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -171,7 +172,7 @@ const LoginForm = () => {
                 <input type="checkbox" className="form-checkbox rounded text-blue-500" />
                 <span className="ml-2">Remember me</span>
               </label>
-              <a href="#" className="text-blue-400 hover:text-blue-300">
+              <a href="#" className="text-blue-400 hover:text-blue-300" onClick={()=>toast("Please contact your system administrator")}>
                 Forgot Password?
               </a>
             </div>
