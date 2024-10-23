@@ -8,7 +8,9 @@ const nextConfig = {
     env: {
         BASE_API_URL: 'https://1pqbgqn7-4000.inc1.devtunnels.ms/',
         LOGIN_API: 'admin/login',
-        SIGNUP_API: 'admin/addNewUser',
+        CHANGE_PASSWORD: 'admin/changePassword ',
+        CREATE_PROFILE:'Employee/createEmployee',
+        GET_ALL_EMPLOYEE:'Employee/getEmployee'
     }
 };
 

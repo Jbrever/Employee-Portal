@@ -8,7 +8,7 @@ function generateHeaders(contentType = 'application/json') {
     'Content-Type': contentType,
   };
 
-  const token = Cookies.get('75F_token');
+  const token = localStorage.getItem('auth-token');
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -18,7 +18,65 @@ function generateHeaders(contentType = 'application/json') {
 
 async function makeRequest(method, url, params, ) {
   try {
-    // const headers = generateHeaders(contentType);
+
+
+    if (method === 'GET') {
+      const response = await Axios.get(`${API_BASE_URL}${url}`, params );
+      return handleLoginResponse(response.data);
+    } else {
+      const response = await Axios.post(`${API_BASE_URL}${url}`, params);
+      return handleLoginResponse(response.data);
+    }
+  } catch (error) {
+    return errorResponse({ message: error.response.data.message });
+  }
+}
+
+async function fetcher(method, url, params) {
+  return makeRequest(method, url, params);
+}
+
+
+
+
+function handleLoginResponse(response) {
+  if (response.status === 1) {
+    return successLoginResponse(response);
+  } else {
+    return errorLoginResponse(response);
+  }
+}
+
+function successLoginResponse(response) {
+  const { result, message,status,user, token } = response;
+  return {
+    status: status,
+    data: result,
+    message,
+    user:user,
+    token:token
+  };
+}
+
+function errorLoginResponse(response) {
+  return {
+    status: false,
+    data: null,
+    message: response?.message || 'An error occurred.',
+  };
+}
+
+
+///// API METHODS GENRAL //////////////////////////////////
+
+async function apiHandler(method, url, params) {
+  return apiRequestMethod(method, url, params);
+}
+
+
+async function apiRequestMethod(method, url, params, ) {
+  try {
+
 
     if (method === 'GET') {
       const response = await Axios.get(`${API_BASE_URL}${url}`, params );
@@ -32,42 +90,6 @@ async function makeRequest(method, url, params, ) {
   }
 }
 
-async function fetcher(method, url, params) {
-  return makeRequest(method, url, params);
-}
-
-async function filesFetch(method, url, params) {
-  const formData = new FormData();
-  Object.keys(params).forEach((key) => formData.append(key, params[key]));
-
-  return makeRequest(method, url, formData, 'multipart/form-data');
-}
-
-async function uploadMultipleFiles(files, url) {
-  try {
-    const formData = new FormData();
-    const fileArray = [];
-
-    for (let i = 0;i < files.length;i++) {
-      formData.append('buffer', files[i]);
-      fileArray.push(files[i]);
-    }
-
-    const getHeaders = () => {
-      return {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${Cookies.get('75F_token')}`,
-      };
-    }
-
-    const header = getHeaders();
-    const response = await Axios.post(`${API_BASE_URL}${url}`, formData, { headers: header });
-    return { response, fileArray };
-  } catch (error) {
-    console.error('Error uploading files:', error);
-  }
-}
-
 function handleResponse(response) {
   if (response.status === 1) {
     return successResponse(response);
@@ -76,15 +98,16 @@ function handleResponse(response) {
   }
 }
 
+
 function successResponse(response) {
-  const { result, message } = response;
+  const { data, message,status } = response;
   return {
-    status: true,
-    data: result,
+    status: status,
+    data: data,
     message,
+
   };
 }
-
 function errorResponse(response) {
   return {
     status: false,
@@ -93,4 +116,5 @@ function errorResponse(response) {
   };
 }
 
-export { fetcher, filesFetch, uploadMultipleFiles };
+
+export { fetcher ,apiHandler};

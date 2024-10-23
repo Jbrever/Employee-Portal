@@ -1,13 +1,34 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Bell, Briefcase, Calendar } from 'lucide-react';
 import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {LeaveTable,PrrojectTable,UserTable} from '@/components/utils/table'
+import { LeaveTable, PrrojectTable, UserTable } from '@/components/utils/table';
+import { changePassword } from '@/_services/services_api';
 
-function EmployeeDashboard({ employeeName }) {
-  const [showPasswordModal, setShowPasswordModal] = useState(true);
+function EmployeeDashboard() {
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const employeeName = userDetails.first_name;
+
+  useEffect(() => {
+    const isFirstTimePassword = JSON.parse(localStorage.getItem('userDetails'));
+
+    if (isFirstTimePassword.isFirstLogin) {
+      setShowPasswordModal(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const passwordLengthValid = newPassword.length >= 8;
+    const passwordsMatch = newPassword === confirmPassword;
+    const containsNumber = /\d/.test(newPassword);
+    setIsPasswordValid(passwordLengthValid && passwordsMatch && containsNumber);
+  }, [newPassword, confirmPassword]);
 
   const handleCloseModal = () => {
     setShowPasswordModal(false);
@@ -15,8 +36,16 @@ function EmployeeDashboard({ employeeName }) {
 
   const handleChangePassword = (e) => {
     e.preventDefault();
-    // Implement password change logic here
-    handleCloseModal();
+    const payload = {
+      email: userDetails.email,
+      newPassword: newPassword,
+      confirmPassword: confirmPassword,
+    };
+
+
+    const response = changePassword(payload);
+    console.log("responseresponse",response)
+    handleCloseModal(); // Allow closing the modal after successful change
   };
 
   const employees = [
@@ -45,21 +74,38 @@ function EmployeeDashboard({ employeeName }) {
     <Container fluid className="p-5 bg-gray-100">
       <WelcomeCard name={employeeName} />
 
-      <Modal show={showPasswordModal} onHide={handleCloseModal} backdrop="static" keyboard={false}>
-        <Modal.Header closeButton>
+      <Modal show={showPasswordModal} onHide={handleCloseModal} backdrop="static" keyboard={false} centered>
+        <Modal.Header>
           <Modal.Title>Change Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleChangePassword}>
             <div className="mb-3">
               <label htmlFor="newPassword" className="form-label">New Password</label>
-              <input type="password" className="form-control" id="newPassword" required />
+              <input
+                type="password"
+                className="form-control"
+                id="newPassword"
+                value={newPassword}
+                placeholder='Enter new password'
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+              />
             </div>
             <div className="mb-3">
               <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input type="password" className="form-control" id="confirmPassword" required />
+              <input
+                type="password"
+                className="form-control"
+                placeholder='Enter confirm new password'
+                id="confirmPassword"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
             </div>
-            <Button variant="primary" type="submit">Change Password</Button>
+            <p className='text-sm text-gray-600'>Password should be atleast 8 character it should be contain any number</p>
+            <Button variant="primary" type="submit" disabled={!isPasswordValid}>Change Password</Button>
           </form>
         </Modal.Body>
       </Modal>

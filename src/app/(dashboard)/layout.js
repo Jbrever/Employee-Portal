@@ -12,14 +12,16 @@ import {
 
 const menuOptions = [
   { label: 'Dashboard', icon: faTachometerAlt, url: '/dashboard' },
-  { label: 'Profile', icon: faUser, url: '#', hasDropdown: true },
+  { label: 'HRIS', icon: faUser, url: '#', hasDropdown: true },
   { label: 'Leaves', icon: faClipboardList, url: '/leaves' },
   { label: 'Logout', icon: faSignOutAlt, url: '/' },
 ];
 
 const profileDropdownOptions = [
-  { label: 'View Profile', url: '/profile' },
+  { label: 'Employee Master', url: '/profile' },
   { label: 'Attrition', url: '/attritions' },
+  { label: 'Transfer Employee', url: '/transferEmployee' },
+  { label: 'EIC Doc', url: '/attritions' },
 ];
 
 export default function RootLayout({ children }) {

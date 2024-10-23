@@ -1,18 +1,38 @@
-import { fetcher } from '@/_helper/apiBase';
+import { fetcher, apiHandler } from '@/_helper/apiBase';
 
-export async function apiHandler(params) {
+export async function loginAPIMethod(params) {
+  
   try {
     const response = await fetcher('POST', process.env.LOGIN_API, params);
     return response;
+    
   } catch (err) {
     return null;
   }
 }
 
 
-export async function signUpApi(params) {
+export async function changePassword(params) {
   try {
-    const response = await fetcher('POST', process.env.SIGNUP_API, params);
+    const response = await apiHandler('POST', process.env.CHANGE_PASSWORD, params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function createProfile(params) {
+  try {
+    const response = await apiHandler('POST', process.env.CREATE_PROFILE, params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function getAllEmployee(params) {
+  try {
+    const response = await apiHandler('GET', process.env.GET_ALL_EMPLOYEE, params);
     return response;
   } catch (err) {
     return null;
