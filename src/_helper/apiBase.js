@@ -48,13 +48,12 @@ function handleLoginResponse(response) {
 }
 
 function successLoginResponse(response) {
-  const { result, message,status,user, token } = response;
+  const { data, message,status } = response;
   return {
     status: status,
-    data: result,
+    data: data,
     message,
-    user:user,
-    token:token
+ 
   };
 }
 

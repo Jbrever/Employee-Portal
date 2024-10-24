@@ -14,6 +14,8 @@ const menuOptions = [
   { label: 'Dashboard', icon: faTachometerAlt, url: '/dashboard' },
   { label: 'HRIS', icon: faUser, url: '#', hasDropdown: true },
   { label: 'Leaves', icon: faClipboardList, url: '/leaves' },
+  { label: 'Employee', icon: faClipboardList, url: '/employee' },
+  { label: 'project Tracker', icon: faClipboardList, url: '/projectList' },
   { label: 'Logout', icon: faSignOutAlt, url: '/' },
 ];
 

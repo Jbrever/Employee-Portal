@@ -27,8 +27,8 @@ localStorage.removeItem('auth-token')
       .then(response => {
         console.log('API response:', response);
         if (response.status == 1  ) {
-          localStorage.setItem('userDetails', JSON.stringify(response.user))
-          localStorage.setItem('auth-token',response.token)
+          localStorage.setItem('userDetails', JSON.stringify(response.data.user))
+          localStorage.setItem('auth-token',response.data.token)
           router.push('/dashboard');
         } else {
           // Handle unsuccessful login (e.g., show error message)

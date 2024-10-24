@@ -10,7 +10,8 @@ const nextConfig = {
         LOGIN_API: 'admin/login',
         CHANGE_PASSWORD: 'admin/changePassword ',
         CREATE_PROFILE:'Employee/createEmployee',
-        GET_ALL_EMPLOYEE:'Employee/getEmployee'
+        GET_ALL_EMPLOYEE:'Employee/getEmployee',
+        DELETE_USER:'Employee/delete'
     }
 };
 

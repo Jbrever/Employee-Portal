@@ -4,14 +4,16 @@ import React, { useState } from 'react';
 import { Camera, Upload } from 'lucide-react';
 import { Card, Tab, Tabs, Button, Form, Container, Row, Col, InputGroup } from 'react-bootstrap';
 import {createProfile} from '@/_services/services_api'
+import { toast } from 'react-hot-toast';
 const EmployeeProfile = () => {
   const [profileImage, setProfileImage] = useState(null);
+  const [errors, setErrors] = useState(null);
   const [personalInfo, setPersonalInfo] = useState({
     firstName: '',
     middleName: '',
     lastName: '',
     company: '',
-    role: '', // Added role field
+    Role: '', // Added role field
     email: '',
     mobile: '',
     dob: '',
@@ -89,15 +91,15 @@ const EmployeeProfile = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) return; 
+
     const formData = {
-        photo: profileImage || 'https://example.com/photos/default.jpg', // Fallback if no image uploaded
+        photo: profileImage || 'https://example.com/photos/default.jpg',
         companyName: personalInfo.company,
         firstName: personalInfo.firstName,
-        // userRole: personalInfo.userRole,
+        Role: personalInfo.Role,
         middleName: personalInfo.middleName,
         lastName: personalInfo.lastName,
         dateOfBirth: personalInfo.dob,
@@ -107,13 +109,11 @@ const EmployeeProfile = () => {
         address: personalInfo.address,
         emergencyNumber: personalInfo.emergencyNo,
         pincode: personalInfo.pincode,
-      
-            adharNumber: statutoryInfo.aadharNo,
-            panNumber: statutoryInfo.panNo,
-            bankAccountNumber: statutoryInfo.bankAccountNo,
-            IFSCCode: statutoryInfo.ifscCode,
-            probationMonths: statutoryInfo.probationPeriod ? statutoryInfo.probationMonths : 0,
-  
+        adharNumber: statutoryInfo.aadharNo,
+        panNumber: statutoryInfo.panNo,
+        bankAccountNumber: statutoryInfo.bankAccountNo,
+        IFSCCode: statutoryInfo.ifscCode,
+        probationMonths: statutoryInfo.probationPeriod ? statutoryInfo.probationMonths : 0,
         workExperience: workExperience.map(work => ({
             companyName: work.companyName,
             role: work.role,
@@ -128,8 +128,18 @@ const EmployeeProfile = () => {
 
     console.log("Form submitted!", formData);
 
-   const Response =  createProfile(formData)
-console.log("Form RESPONSE",Response)
+    try {
+        const response = await createProfile(formData); // Await response from createProfile
+        console.log("Form RESPONSE", response);
+        if (response.success) {
+            toast.success(response.message); // Display success message
+        } else {
+            toast.error(response.message || 'An error occurred'); // Display error message
+        }
+    } catch (error) {
+        console.error("Error creating profile:", error);
+        toast.error('Failed to create profile. Please try again.'); // Display error message
+    }
 };
 
   return (
@@ -509,6 +519,7 @@ console.log("Form RESPONSE",Response)
           </Card>
         </Tab>
       </Tabs>
+
     </Container>
   );
 };

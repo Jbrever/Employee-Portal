@@ -30,6 +30,16 @@ export async function createProfile(params) {
   }
 }
 
+export async function deleteUser(params) {
+  console.log('deleteUser',params)
+  
+  try {
+    const response = await apiHandler('POST', process.env.DELETE_USER/params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}
 export async function getAllEmployee(params) {
   try {
     const response = await apiHandler('GET', process.env.GET_ALL_EMPLOYEE, params);
