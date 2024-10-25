@@ -48,3 +48,21 @@ export async function getAllEmployee(params) {
     return null;
   }
 }
+
+export async function getAllProjects(params) {
+  try {
+    const response = await apiHandler('GET', process.env.PROJECT_LIST, params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}
+
+export async function createProject(params) {
+  try {
+    const response = await apiHandler('POST', process.env.CREATE_PROJECTS, params);
+    return response;
+  } catch (err) {
+    return null;
+  }
+}

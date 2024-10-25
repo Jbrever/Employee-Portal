@@ -26,9 +26,10 @@ export default function Page() {
                 <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
                     Employee List
                 </h1>
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto" >
                     <EmployeeTable data={employeeList} />
                 </div>
+                
             </div>
 
     );

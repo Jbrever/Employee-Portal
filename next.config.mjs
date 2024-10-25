@@ -11,7 +11,9 @@ const nextConfig = {
         CHANGE_PASSWORD: 'admin/changePassword ',
         CREATE_PROFILE:'Employee/createEmployee',
         GET_ALL_EMPLOYEE:'Employee/getEmployee',
-        DELETE_USER:'Employee/delete'
+        DELETE_USER:'Employee/delete',
+        PROJECT_LIST:'admin/projectDetails/getProjectDetails',
+        CREATE_PROJECTS:'admin/projectDetails/createProject',
     }
 };
 

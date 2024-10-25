@@ -15,7 +15,7 @@ const menuOptions = [
   { label: 'HRIS', icon: faUser, url: '#', hasDropdown: true },
   { label: 'Leaves', icon: faClipboardList, url: '/leaves' },
   { label: 'Employee', icon: faClipboardList, url: '/employee' },
-  { label: 'project Tracker', icon: faClipboardList, url: '/projectList' },
+  { label: 'Project Tracker', icon: faClipboardList, url: '/projectList' },
   { label: 'Logout', icon: faSignOutAlt, url: '/' },
 ];
 
