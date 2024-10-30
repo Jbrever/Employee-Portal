@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Card,
@@ -16,13 +16,17 @@ import {
   TextField,
   Typography
 } from '@mui/material'
+import { createProject, getAllProjects } from '@/_services/services_api'
 
 export default function ProjectForm() {
+  const [selectedProject, setSelectedProject] = useState('')
+  const [projectslist, setProjectList] = useState([]) // State to hold fetched projects
   const [isInterested, setIsInterested] = useState(false)
   const [formData, setFormData] = useState({
     projectName: '',
-    projectType: '',
+    projectType: 'web', // Set default to the first item
     source: '',
+    interested: true,
     representative: '',
     clientName: '',
     projectDetails: '',
@@ -39,8 +43,39 @@ export default function ProjectForm() {
     }
   })
 
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await getAllProjects();
+        setProjectList(response.data); // Assuming response is an array of projects
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    }
+    fetchProjects();
+  }, [])
+
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleProjectSelect = (project) => {
+    
+    setSelectedProject(project.projectName);
+    setFormData({
+      ...formData,
+      projectName: project.projectName,
+      projectType: project.projectType,
+      source: project.source,
+      representative: project.representative,
+      clientName: project.clientName,
+      projectDetails: project.projectDetails,
+      contactPerson: project.contactPerson,
+      contactNumber: project.contactNumber,
+      firstTalkDate: project.firstTalkDate,
+      sendEmail: project.sendEmail,
+      // Reset other fields if necessary
+    });
   }
 
   const handleResourceChange = (index, field, value) => {
@@ -60,9 +95,19 @@ export default function ProjectForm() {
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(formData)
-    // Here you would typically send the data to your API
+    e.preventDefault();
+    if (!formData.projectName) {
+      alert("Project Name is required");
+      return;
+    }
+
+    console.log("Creating project with data:", formData)
+    createProject(formData);
+  }
+
+  const handleHold = () => {
+    setFormData(prev => ({ ...prev, interested: false }));
+    handleSubmit();
   }
 
   return (
@@ -70,7 +115,27 @@ export default function ProjectForm() {
       <CardHeader title="Project Creation Form" />
       <CardContent>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <InputLabel id="select-project-label">Select Existing Project</InputLabel>
+              <Select
+                labelId="select-project-label"
+                fullWidth
+                value={selectedProject}
+                onChange={(e) => {
+                  const selected = projectslist.find(project => project.projectName === e.target.value);
+                  if (selected) {
+                    handleProjectSelect(selected);
+                  }
+                }}
+              >
+                {projectslist.map((project) => (
+                  <MenuItem key={project.id} value={project.projectName}>
+                    {project.projectName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
             {!isInterested ? (
               <>
                 <Grid item xs={12} sm={6}>
@@ -80,6 +145,7 @@ export default function ProjectForm() {
                     label="Project Name"
                     value={formData.projectName}
                     onChange={(e) => handleChange('projectName', e.target.value)}
+                    required
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -97,6 +163,7 @@ export default function ProjectForm() {
                     <MenuItem value="other">Other</MenuItem>
                   </Select>
                 </Grid>
+                {/* Rest of the form remains unchanged */}
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -136,10 +203,17 @@ export default function ProjectForm() {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    type="text"
                     size="small"
-                    label="Contact Person Number"
+                    label="Contact Person Phone Number"
                     value={formData.contactNumber}
-                    onChange={(e) => handleChange('contactNumber', e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      if (/^[\d\s\-()]*$/.test(value)) {
+                        handleChange('contactNumber', value);
+                      }
+                    }}
+                    inputProps={{ inputMode: 'numeric', pattern: '[0-9\s\-\(\)]*' }}
                   />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -177,10 +251,10 @@ export default function ProjectForm() {
                 </Grid>
                 <Grid item xs={12} container justifyContent="flex-end" spacing={1}>
                   <Grid item>
-                    <Button variant="contained" color="success" type="submit">Submit</Button>
+                    <Button variant="contained" color="primary" type="submit">Submit</Button>
                   </Grid>
                   <Grid item>
-                    <Button variant="outlined" onClick={() => console.log('Hold')}>Hold</Button>
+                    <Button variant="outlined" onClick={handleHold} type="button">Hold</Button>
                   </Grid>
                   <Grid item>
                     <Button variant="contained" color="success" onClick={() => setIsInterested(true)}>Next</Button>
@@ -189,6 +263,7 @@ export default function ProjectForm() {
               </>
             ) : (
               <>
+                {/* Follow-up Actions and Resources Planning remain unchanged */}
                 <Grid item xs={12}>
                   <Typography variant="h6" sx={{ mt: 4, fontSize: '1.1rem' }}>Follow-up Actions</Typography>
                   {Object.entries(formData.agreements).map(([agreement, { checked, dateTime }]) => (
@@ -258,4 +333,4 @@ export default function ProjectForm() {
       </CardContent>
     </Card>
   )
-}xcxc
+}

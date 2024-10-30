@@ -13,7 +13,8 @@ const nextConfig = {
         GET_ALL_EMPLOYEE:'Employee/getEmployee',
         DELETE_USER:'Employee/delete',
         PROJECT_LIST:'admin/projectDetails/getProjectDetails',
-        CREATE_PROJECTS:'admin/projectDetails/createProject',
+        CREATE_PROJECTS:'admin/projectDetails/createProjectDetails',
+        DELETE_PROJECTS:'admin/projectDetails/deleteProjects/',
     }
 };
 

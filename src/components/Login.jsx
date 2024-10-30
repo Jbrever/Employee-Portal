@@ -3,16 +3,20 @@ import { useState, useEffect } from 'react';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { loginAPIMethod } from '@/_services/services_api';
 import { useRouter } from 'next/navigation';
+import {  Toaster, toast } from 'react-hot-toast';
+import 'react-toastify/dist/ReactToastify.css';
+
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter(); 
 
-  useEffect(()=>{
-localStorage.removeItem('userDetails')
-localStorage.removeItem('auth-token')
-  },[])
+  useEffect(() => {
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('auth-token');
+  }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -22,22 +26,21 @@ localStorage.removeItem('auth-token')
       password,
     };
 
-
     loginAPIMethod(payload)
       .then(response => {
         console.log('API response:', response);
-        if (response.status == 1  ) {
-          localStorage.setItem('userDetails', JSON.stringify(response.data.user))
-          localStorage.setItem('auth-token',response.data.token)
+        if (response.status === 1) {
+          localStorage.setItem('userDetails', JSON.stringify(response.data.user));
+          localStorage.setItem('auth-token', response.data.token);
+          toast.success(response.message)
           router.push('/dashboard');
         } else {
-          // Handle unsuccessful login (e.g., show error message)
-          console.error('Login failed:', response.message);
+       toast.error(response.message)
         }
       })
       .catch(error => {
         console.error('API error:', error);
-        // Handle the error here (e.g., show error message)
+        toast.error(response.message)
       });
 
     console.log('Login attempt with:', payload);
@@ -78,9 +81,7 @@ localStorage.removeItem('auth-token')
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email address
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-indigo-500" />
@@ -100,9 +101,7 @@ localStorage.removeItem('auth-token')
 
             {/* Password Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-indigo-500" />
@@ -140,14 +139,10 @@ localStorage.removeItem('auth-token')
                   type="checkbox"
                   className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">Remember me</label>
               </div>
               <div className="text-sm">
-                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                  Forgot password?
-                </a>
+                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">Forgot password?</a>
               </div>
             </div>
 
@@ -164,6 +159,11 @@ localStorage.removeItem('auth-token')
           </form>
         </div>
       </div>
+      <Toaster
+  position="top-right"
+  reverseOrder={false}
+/>
+  
     </div>
   );
 };

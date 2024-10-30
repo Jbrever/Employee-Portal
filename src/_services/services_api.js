@@ -66,3 +66,16 @@ export async function createProject(params) {
     return null;
   }
 }
+
+
+export async function deleteProject(projectId) {
+  try {
+    // Construct the URL by appending the project ID
+    const url = `${process.env.DELETE_PROJECTS}${projectId}`;
+    const response = await apiHandler('POST', url, {});
+    return response;
+  } catch (err) {
+    console.error("Error deleting project:", err);
+    return null;
+  }
+}

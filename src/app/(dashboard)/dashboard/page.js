@@ -1,27 +1,24 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Bell, Briefcase, Calendar } from 'lucide-react';
-import { Container, Row, Col, Modal, Button } from 'react-bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { LeaveTable, PrrojectTable, UserTable } from '@/components/utils/table';
+import { People, Notifications, Work, EventNote } from '@mui/icons-material';
+import { Card, Button, Modal } from 'react-bootstrap'; // Using Bootstrap for modals and cards
 import { changePassword } from '@/_services/services_api';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'; // Importing Material-UI components
 
-function EmployeeDashboard() {
+const EmployeeDashboard = () => {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+  const userDetails = JSON.parse(localStorage.getItem('userDetails') || '{}');
   const employeeName = userDetails.first_name;
 
   useEffect(() => {
-    const isFirstTimePassword = JSON.parse(localStorage.getItem('userDetails'));
-
-    if (isFirstTimePassword.isFirstLogin) {
+    if (userDetails.isFirstLogin) {
       setShowPasswordModal(true);
     }
-  }, []);
+  }, [userDetails.isFirstLogin]);
 
   useEffect(() => {
     const passwordLengthValid = newPassword.length >= 8;
@@ -30,22 +27,17 @@ function EmployeeDashboard() {
     setIsPasswordValid(passwordLengthValid && passwordsMatch && containsNumber);
   }, [newPassword, confirmPassword]);
 
-  const handleCloseModal = () => {
-    setShowPasswordModal(false);
-  };
+  const handleCloseModal = () => setShowPasswordModal(false);
 
   const handleChangePassword = (e) => {
     e.preventDefault();
     const payload = {
       email: userDetails.email,
-      newPassword: newPassword,
-      confirmPassword: confirmPassword,
+      newPassword,
+      confirmPassword,
     };
-
-
-    const response = changePassword(payload);
-    console.log("responseresponse",response)
-    handleCloseModal(); // Allow closing the modal after successful change
+    changePassword(payload);
+    handleCloseModal();
   };
 
   const employees = [
@@ -71,135 +63,191 @@ function EmployeeDashboard() {
   ];
 
   return (
-    <Container fluid className="p-5 bg-gray-100">
+    <div className="container mt-4">
       <WelcomeCard name={employeeName} />
 
-      <Modal show={showPasswordModal} onHide={handleCloseModal} backdrop="static" keyboard={false} centered>
-        <Modal.Header>
+      {/* Change Password Modal */}
+      <Modal show={showPasswordModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
           <Modal.Title>Change Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleChangePassword}>
-            <div className="mb-3">
-              <label htmlFor="newPassword" className="form-label">New Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="newPassword"
-                value={newPassword}
-                placeholder='Enter new password'
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input
-                type="password"
-                className="form-control"
-                placeholder='Enter confirm new password'
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-            <p className='text-sm text-gray-600'>Password should be atleast 8 character it should be contain any number</p>
-            <Button variant="primary" type="submit" disabled={!isPasswordValid}>Change Password</Button>
-          </form>
+          <p>Please enter your new password. It should be at least 8 characters long and contain at least one number.</p>
+          <input
+            type="password"
+            placeholder="New Password"
+            className="form-control"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            className="form-control mt-2"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          />
         </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleChangePassword} disabled={!isPasswordValid}>
+            Change Password
+          </Button>
+        </Modal.Footer>
       </Modal>
 
-      <Row className="mt-4">
-        <Col md={8}>
+      {/* Main Content */}
+      <div className="row">
+        <div className="col-md-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="shadow-sm rounded-lg overflow-hidden">
-              <div className="bg-[#168aad] text-white p-3">
-                <div className="flex items-center">
-                  <Users className="text-white mr-2" size={24} />
-                  <h5 className="font-semibold mb-0">Employee List</h5>
-                </div>
-              </div>
-              <div className="p-4">
+            <Card className="mb-4">
+              <Card.Header className="d-flex align-items-center" style={{ backgroundColor: '#007bff', color: '#fff' }}>
+                <People className="me-2" />
+                <h5 className="mb-0">Employee List</h5>
+              </Card.Header>
+              <Card.Body>
                 <UserTable data={employees} />
-              </div>
-            </div>
+              </Card.Body>
+            </Card>
           </motion.div>
-        </Col>
+        </div>
 
-        <Col md={4}>
+        <div className="col-md-4">
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
-            <div className="shadow-sm rounded-lg h-full overflow-hidden">
-              <div className="bg-[#f7b801] text-white p-3">
-                <div className="flex items-center">
-                  <Bell className="text-white mr-2" size={24} />
-                  <h5 className="font-semibold mb-0">Notices</h5>
-                </div>
-              </div>
-              <div className="p-4">
-                <ul className="list-none">
+            <Card className="mb-4">
+              <Card.Header className="d-flex align-items-center" style={{ backgroundColor: '#28a745', color: '#fff' }}>
+                <Notifications className="me-2" />
+                <h5 className="mb-0">Notices</h5>
+              </Card.Header>
+              <Card.Body>
+                <ul className="list-unstyled">
                   {notices.map((notice, index) => (
-                    <motion.li key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }} className="flex items-start mb-3">
-                      <Bell className="text-blue-500 mr-2" size={16} />
-                      <span>{notice}</span>
+                    <motion.li key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}>
+                      {notice}
                     </motion.li>
                   ))}
                 </ul>
-              </div>
-            </div>
+              </Card.Body>
+            </Card>
           </motion.div>
-        </Col>
-      </Row>
-
-      <Row className="mt-4">
-        <Col md={6}>
-          <div className="shadow-sm rounded-lg h-full overflow-hidden">
-            <div className="bg-[#168aad] text-white p-3">
-              <div className="flex items-center">
-                <Briefcase className="text-white mr-2" size={24} />
-                <h5 className="font-semibold mb-0">Active Projects</h5>
-              </div>
-            </div>
-            <div className="p-4">
-              <PrrojectTable data={projects} />
-            </div>
-          </div>
-        </Col>
-
-        <Col md={6}>
-          <div className="shadow-sm rounded-lg h-full overflow-hidden">
-            <div className="bg-[#84a98c] text-white p-3">
-              <div className="flex items-center">
-                <Calendar className="text-white mr-2" size={24} />
-                <h5 className="font-semibold mb-0">Upcoming Leaves</h5>
-              </div>
-            </div>
-            <div className="p-4">
-              <LeaveTable data={leaves} />
-            </div>
-          </div>
-        </Col>
-      </Row>
-    </Container>
-  );
-}
-
-function WelcomeCard({ name }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-      <div className="bg-[#134074] text-white shadow-lg rounded-lg p-6 flex justify-between items-center">
-        <div>
-          <h2 className="text-lg font-semibold">Welcome back, {name}! 👋</h2>
-          <p className="mb-1 opacity-75">Here's what's happening in your workplace today:</p>
-        </div>
-        <div className="hidden md:block">
-          <div className="bg-white bg-opacity-10 rounded-full p-4">
-            <Users size={32} />
-          </div>
         </div>
       </div>
+
+      <div className="row">
+        <div className="col-md-6">
+          <Card className="mb-4">
+            <Card.Header className="d-flex align-items-center" style={{ backgroundColor: '#17a2b8', color: '#fff' }}>
+              <Work className="me-2" />
+              <h5 className="mb-0">Active Projects</h5>
+            </Card.Header>
+            <Card.Body>
+              <ProjectTable data={projects} />
+            </Card.Body>
+          </Card>
+        </div>
+
+        <div className="col-md-6">
+          <Card className="mb-4">
+            <Card.Header className="d-flex align-items-center" style={{ backgroundColor: '#dc3545', color: '#fff' }}>
+              <EventNote className="me-2" />
+              <h5 className="mb-0">Upcoming Leaves</h5>
+            </Card.Header>
+            <Card.Body>
+              <LeaveTable data={leaves} />
+            </Card.Body>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const WelcomeCard = ({ name }) => {
+  return (
+    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <Card className="mb-4 bg-primary text-white">
+        <Card.Body>
+          <h1 className="h4">Welcome back, {name}! 👋</h1>
+          <p>Here's what's happening in your workplace today:</p>
+        </Card.Body>
+      </Card>
     </motion.div>
   );
-}
+};
+
+const UserTable = ({ data }) => (
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow style={{ backgroundColor: '#007bff', color: '#fff' }}>
+          <TableCell style={{ color: '#fff' }}>Name</TableCell>
+          <TableCell style={{ color: '#fff' }}>Department</TableCell>
+          <TableCell style={{ color: '#fff' }}>Email</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((employee) => (
+          <TableRow key={employee.id}>
+            <TableCell>{employee.name}</TableCell>
+            <TableCell>{employee.department}</TableCell>
+            <TableCell>{employee.email}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
+
+const ProjectTable = ({ data }) => (
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow style={{ backgroundColor: '#17a2b8', color: '#fff' }}>
+          <TableCell style={{ color: '#fff' }}>Name</TableCell>
+          <TableCell style={{ color: '#fff' }}>Start Date</TableCell>
+          <TableCell style={{ color: '#fff' }}>End Date</TableCell>
+          <TableCell style={{ color: '#fff' }}>Assigned To</TableCell>
+          <TableCell style={{ color: '#fff' }}>Status</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((project) => (
+          <TableRow key={project.id}>
+            <TableCell>{project.name}</TableCell>
+            <TableCell>{project.startDate}</TableCell>
+            <TableCell>{project.endDate}</TableCell>
+            <TableCell>{project.assignedTo}</TableCell>
+            <TableCell>{project.status}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
+
+const LeaveTable = ({ data }) => (
+  <TableContainer component={Paper}>
+    <Table>
+      <TableHead>
+        <TableRow style={{ backgroundColor: '#dc3545', color: '#fff' }}>
+          <TableCell style={{ color: '#fff' }}>Name</TableCell>
+          <TableCell style={{ color: '#fff' }}>Start Date</TableCell>
+          <TableCell style={{ color: '#fff' }}>End Date</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.map((leave) => (
+          <TableRow key={leave.id}>
+            <TableCell>{leave.name}</TableCell>
+            <TableCell>{leave.startDate}</TableCell>
+            <TableCell>{leave.endDate}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
 
 export default EmployeeDashboard;

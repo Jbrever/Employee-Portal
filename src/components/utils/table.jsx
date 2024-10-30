@@ -1,11 +1,12 @@
 // components/UserTable.js
 
-import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton,  Typography, } from '@mui/material';
+import React, {useState} from 'react';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton,  Typography, Button,Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { deleteUser } from '@/_services/services_api';
 import moment from 'moment';
+import { styled } from '@mui/material/styles';
 import { Visibility, Edit, Delete, Pause } from '@mui/icons-material';
 export const UserTable = ({ data }) => {
   return (
@@ -191,14 +192,21 @@ export const EmployeeTable = ({ data }) => {
 
 
 
+const options = {
+  1: "Initial",
+  2: "Planning",
+  3: "Running",
+  4: "Completed",
+  5: "Hold Not Complete",
+};
 
-export const ProjectListTable = ({ projectData }) => (
+export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,handleStatusChange, value }) => (
   <TableContainer component={Paper} className="w-full shadow-lg p-4">
     <Table sx={{ borderCollapse: 'collapse', width: '100%' }}>
       <TableHead>
         <TableRow>
-          {['Project Name', 'Type', 'Client Name', 'Contact Person', 'Start Date', 'Assigned To', 'Contact No.',  'Status', 'Actions'].map((header) => (
-            <TableCell align="right" key={header} >
+          {['Project Name', 'Type', 'Client Name', 'Contact Person', 'Start Date', 'Assigned To', 'Contact No.',  'Status','Change status', 'Actions'].map((header) => (
+            <TableCell align="right" key={header}>
               <Typography variant="body2" className="text-sm">{header}</Typography>
             </TableCell>
           ))}
@@ -207,25 +215,40 @@ export const ProjectListTable = ({ projectData }) => (
       <TableBody>
         {projectData.map((project, index) => (
           <TableRow key={project._id} sx={{ background: index % 2 === 0 ? '#f9f9f9' : 'white' }}>
-            <TableCell >{project.projectName}</TableCell>
-            <TableCell align="right" >{project.projectType}</TableCell>
-            <TableCell align="right" >{project.clientName}</TableCell>
-            <TableCell align="right" >{project.contactPerson}</TableCell>
-            <TableCell align="right" >
-              {moment(project.resources[0].startDate).format("DD-MM-YYYY")}
-            </TableCell>
-            <TableCell align="right" >{project.resources[0].assignedTo}</TableCell>
-            <TableCell align="right" >{project.contactNumber}</TableCell>
-   
-            <TableCell align="right" >
-              {project.interested ? 'Interested' : 'Not Interested'}
+            <TableCell>{project.projectName}</TableCell>
+            <TableCell align="right">{project.projectType}</TableCell>
+            <TableCell align="right">{project.clientName}</TableCell>
+            <TableCell align="right">{project.contactPerson}</TableCell>
+            <TableCell align="right">{moment(project.resources[0].startDate).format("DD-MM-YYYY")}</TableCell>
+            <TableCell align="right">{project.resources[0].assignedTo}</TableCell>
+            <TableCell align="right">{project.contactNumber}</TableCell>
+            <TableCell align="right">{project.interested ? 'Interested' : 'Not Interested'}</TableCell>
+            <TableCell align="right">
+            <FormControl variant="outlined" size="small" fullWidth>
+      <InputLabel id="view-label">View</InputLabel>
+      <Select
+        labelId="view-label"
+        value={value}
+        onChange={handleStatusChange}
+        label={options[value]}
+      >
+        <MenuItem value={1} >Initial</MenuItem>
+        <MenuItem value={2}>Planning</MenuItem>
+        <MenuItem value={3}>Running</MenuItem>
+        <MenuItem value={4}>Completed</MenuItem>
+        <MenuItem value={5}>Hold Not Complete</MenuItem>
+      </Select>
+    </FormControl>
             </TableCell>
             <TableCell align="right" sx={{ border: '1px solid #ddd', width: '120px' }}>
               <div className="flex justify-around">
-                <IconButton color="primary" size="small"><Visibility /></IconButton>
-                <IconButton color="secondary" size="small"><Edit /></IconButton>
-                <IconButton color="error" size="small"><Delete /></IconButton>
-                <IconButton color="default" size="small"><Pause /></IconButton>
+                <IconButton color="primary" size="small" onClick={() => onViewDetails(project)}>
+                  <Visibility />
+                </IconButton>
+            
+                {/* <IconButton color="secondary" size="small"><Edit /></IconButton> */}
+                <IconButton color="error" size="small" onClick={() => onDeleteProject(project)}><Delete /></IconButton>
+                {/* <IconButton color="default" size="small"><Pause /></IconButton> */}
               </div>
             </TableCell>
           </TableRow>

@@ -1,4 +1,3 @@
-'use client'
 import React, { useEffect, useState } from 'react';
 import {
   Table,
@@ -15,30 +14,46 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  CircularProgress,
 } from '@mui/material';
-import { Visibility, Edit, Delete, Pause } from '@mui/icons-material';
-import { getAllProjects } from '@/_services/services_api';
+import { Visibility, Edit, Delete, Pause, Add } from '@mui/icons-material';
+import { getAllProjects, deleteProject } from '@/_services/services_api';
 import { ProjectListTable } from '@/components/utils/table';
+import ProjectDetailsModal from '@/components/utils/ProjectDetailsModal'; // Import the modal component
+import { useRouter } from 'next/navigation'; 
 import * as XLSX from 'xlsx';
 
 const MyTable = () => {
   const [projectList, setProjectList] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [currentProjectStatus, setcurrentProjectStatus] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
+      setLoading(true);
       try {
         const response = await getAllProjects();
         setProjectList(response.data);
         setFilteredProjects(response.data);
       } catch (error) {
         console.error("Error fetching projects:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProjects();
   }, []);
+  
+  const router = useRouter(); 
+
+  const handleAddProject = () => {
+    router.push('/projectTracker'); 
+  };
 
   const handleDownload = () => {
     const worksheet = XLSX.utils.json_to_sheet(filteredProjects);
@@ -48,7 +63,6 @@ const MyTable = () => {
   };
 
   const handleFilterChange = (event) => {
-    debugger
     const value = event.target.value;
     setStatusFilter(value);
 
@@ -60,11 +74,27 @@ const MyTable = () => {
     }
   };
 
+  const handleViewDetails = (project) => {
+    setSelectedProject(project);
+    setModalOpen(true);
+  };
+  const handleDeleteProject = (project) => {
+    console.log('Delete project', project);
+    deleteProject(project._id)
+   
+  };
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedProject(null);
+  };
+const handleStatusChange= (e) => {
+  console.log('Change status', e.target);
+  // Update project status API call here
+}
   return (
-    <div className='px-4 '>
-    
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+    <div className='px-4'>
+         {!loading ?(
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
         <FormControl variant="outlined" style={{ minWidth: 120 }}>
           <InputLabel>Status</InputLabel>
           <Select
@@ -72,9 +102,7 @@ const MyTable = () => {
             onChange={handleFilterChange}
             label="Status"
           >
-        
             <MenuItem value="">All</MenuItem>
-    
             <MenuItem value="1">Running</MenuItem>
             <MenuItem value="2">Hold</MenuItem>
             <MenuItem value="3">Completed</MenuItem>
@@ -82,24 +110,49 @@ const MyTable = () => {
           </Select>
         </FormControl>
 
-        <Button 
-          variant="contained" 
-          color="primary" 
-          size="small"
-          onClick={handleDownload}
-          style={{ marginLeft: '16px' }}
-        >
-          Download Excel
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            size="small"
+            onClick={handleAddProject}
+            startIcon={<Add />}
+            style={{ marginLeft: '16px' }}
+          >
+            Add New Project
+          </Button>
+          
+          <Button 
+            variant="contained" 
+            color="primary" 
+            size="small"
+            onClick={handleDownload}
+            style={{ marginLeft: '16px' }}
+          >
+            Download Excel
+          </Button>
+        </div>
       </div>
-
-      {filteredProjects.length > 0 ? (
-        <ProjectListTable projectData={filteredProjects} />
+         ):""}
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+          <CircularProgress />
+        </div>
       ) : (
-        <Typography variant="body1" color="textSecondary">
-          No data available
-        </Typography>
+        filteredProjects.length > 0 ? (
+          <ProjectListTable projectData={filteredProjects} onViewDetails={handleViewDetails} onDeleteProject={handleDeleteProject} handleStatusChange={handleStatusChange} value={currentProjectStatus}/>
+        ) : (
+          <Typography variant="body1" color="textSecondary">
+            No data available
+          </Typography>
+        )
       )}
+
+      <ProjectDetailsModal
+        open={modalOpen}
+        onClose={handleCloseModal}
+        project={selectedProject}
+      />
     </div>
   );
 };
