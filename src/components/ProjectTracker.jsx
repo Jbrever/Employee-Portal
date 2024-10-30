@@ -22,6 +22,7 @@ import { ProjectListTable } from '@/components/utils/table';
 import ProjectDetailsModal from '@/components/utils/ProjectDetailsModal'; // Import the modal component
 import { useRouter } from 'next/navigation'; 
 import * as XLSX from 'xlsx';
+import toast from 'react-hot-toast';
 
 const MyTable = () => {
   const [projectList, setProjectList] = useState([]);
@@ -78,10 +79,17 @@ const MyTable = () => {
     setSelectedProject(project);
     setModalOpen(true);
   };
-  const handleDeleteProject = (project) => {
-    console.log('Delete project', project);
-    deleteProject(project._id)
-   
+  const handleDeleteProject = async (project) => {
+    try {
+      const response = await deleteProject(project._id); // Assuming deleteProject returns a promise
+      if (response.success) {
+        toast.success(response.message); // Show success toast
+      } else {
+        toast.error(response.message); // Show error toast if deletion fails
+      }
+    } catch (error) {
+      toast.error('An error occurred while deleting the project'); // Handle network or other errors
+    }
   };
   const handleCloseModal = () => {
     setModalOpen(false);
