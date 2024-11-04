@@ -7,15 +7,19 @@ import {
   faUser, 
   faClipboardList, 
   faSignOutAlt,
-  faBars
+  faBars,
+  faChevronDown,
+  faBuilding,
+  faProjectDiagram,
+  faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
 
 const menuOptions = [
   { label: 'Dashboard', icon: faTachometerAlt, url: '/dashboard' },
-  { label: 'HRIS', icon: faUser, url: '#', hasDropdown: true },
-  { label: 'Leaves', icon: faClipboardList, url: '/leaves' },
-  { label: 'Employee', icon: faClipboardList, url: '/employee' },
-  { label: 'Project Tracker', icon: faClipboardList, url: '/projectList' },
+  { label: 'HRIS', icon: faBuilding, url: '#', hasDropdown: true },
+  { label: 'Leaves', icon: faCalendarAlt, url: '/leaves' },
+  { label: 'Employee', icon: faUser, url: '/employee' },
+  { label: 'Project Tracker', icon: faProjectDiagram, url: '/projectList' },
   { label: 'Logout', icon: faSignOutAlt, url: '/' },
 ];
 
@@ -49,57 +53,65 @@ export default function RootLayout({ children }) {
       <aside 
         className={`
           fixed lg:static inset-y-0 left-0 z-30
-          w-64 bg-gray-800 text-white shadow-2xl
+          w-72 bg-gradient-to-b from-slate-800 to-slate-900 text-white
+          shadow-xl border-r border-slate-700/50
           transform transition-transform duration-300 ease-in-out
           ${isMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Logo Section */}
-        <div className="flex items-center h-16 px-6 border-b border-gray-700">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+        <div className="flex items-center h-20 px-6 border-b border-slate-700/50">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-xl font-bold">N</span>
             </div>
-            <h2 className="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-              Now A Wave
-            </h2>
+            <div>
+              <h2 className="text-xl font-bold bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+                Now A Wave
+              </h2>
+              <p className="text-xs text-indigo-200">Employee Portal</p>
+            </div>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="px-3 mt-6 space-y-1">
+        <nav className="px-4 mt-8 space-y-2">
           {menuOptions.map((option, index) => {
             const isActive = currentPath === option.url;
 
             if (option.hasDropdown) {
               return (
-                <div key={index}>
-                  <a
-                    href={option.url}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setIsProfileDropdownOpen(!isProfileDropdownOpen);
-                    }}
+                <div key={index} className="relative">
+                  <button
+                    onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                     className={`
-                      flex items-center px-4 py-3 text-sm rounded-lg
+                      w-full flex items-center justify-between px-4 py-3 text-sm rounded-xl
                       transition-all duration-200 group
-                      ${isActive ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}
+                      ${isActive ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg' 
+                        : 'text-gray-300 hover:bg-white/5 hover:text-white'}
                     `}
                   >
+                    <div className="flex items-center">
+                      <FontAwesomeIcon 
+                        icon={option.icon} 
+                        className={`w-5 h-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                      />
+                      <span className="font-medium">{option.label}</span>
+                    </div>
                     <FontAwesomeIcon 
-                      icon={option.icon} 
-                      className={`w-5 h-5 mr-3 transition-transform duration-200 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}
+                      icon={faChevronDown} 
+                      className={`w-4 h-4 transition-transform duration-200 ${isProfileDropdownOpen ? 'rotate-180' : ''}`}
                     />
-                    <span className="font-medium">{option.label}</span>
-                  </a>
+                  </button>
                   {isProfileDropdownOpen && (
-                    <div className="ml-6 mt-2 bg-gray-700 rounded-lg">
+                    <div className="mt-2 ml-4 py-2 px-3 bg-white/5 rounded-xl backdrop-blur-sm">
                       {profileDropdownOptions.map((dropdownOption, dropdownIndex) => (
                         <a
                           key={dropdownIndex}
                           href={dropdownOption.url}
-                          className={`block px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white`}
+                          className="flex items-center px-3 py-2 text-sm text-gray-300 rounded-lg hover:bg-white/5 hover:text-white transition-colors duration-200"
                         >
+                          <span className="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
                           {dropdownOption.label}
                         </a>
                       ))}
@@ -114,9 +126,10 @@ export default function RootLayout({ children }) {
                 key={index}
                 href={option.url}
                 className={`
-                  flex items-center px-4 py-3 text-sm rounded-lg
+                  flex items-center px-4 py-3 text-sm rounded-xl
                   transition-all duration-200 group
-                  ${isActive ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700/50 hover:text-white'}
+                  ${isActive ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg' 
+                    : 'text-gray-300 hover:bg-white/5 hover:text-white'}
                 `}
               >
                 <FontAwesomeIcon 
@@ -130,39 +143,38 @@ export default function RootLayout({ children }) {
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-700">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gray-600 rounded-full overflow-hidden">
-              <img 
-                src="/api/placeholder/32/32" 
-                alt="Profile" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-white">John Doe</p>
-              <p className="text-xs text-gray-400">Administrator</p>
-            </div>
-          </div>
-        </div>
+      
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center px-6 ">
-          <button 
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-gray-100 rounded-lg"
-          >
-            <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
-          </button>
-          <Header />
+        <header className="h-20 bg-gradient-to-r from-slate-800 to-slate-900 border-b border-slate-700/50 shadow-lg">
+          <div className="h-full px-6 flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden w-10 h-10 flex items-center justify-center text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+              >
+                <FontAwesomeIcon icon={faBars} className="w-5 h-5" />
+              </button>
+              <Header />
+            </div>
+            
+            {/* Quick Actions */}
+            <div className="flex items-center space-x-2">
+              <button className="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg transition-colors duration-200">
+                Quick Action
+              </button>
+            </div>
+          </div>
         </header>
 
         {/* Page Content */}
-        <div className='d-flex justify-center'>
-          {children}
+        <div className="flex-1 p-6 bg-gray-50">
+          <div className="max-w-7xl mx-auto">
+            {children}
+          </div>
         </div>
       </main>
     </div>

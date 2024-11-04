@@ -15,6 +15,7 @@ const nextConfig = {
         PROJECT_LIST:'admin/projectDetails/getProjectDetails',
         CREATE_PROJECTS:'admin/projectDetails/createProjectDetails',
         DELETE_PROJECTS:'admin/projectDetails/deleteProjects/',
+        UPDATE_STATUS:'admin/projectDetails/updateProjectStatus'
     }
 };
 

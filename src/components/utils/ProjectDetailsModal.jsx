@@ -8,6 +8,8 @@ import {
   CheckCircle as CheckCircleIcon,
 } from '@mui/icons-material';
 const ProjectDetailsModal = ({ open, onClose, project }) => {
+
+
   const renderAgreement = (agreement) => (
     <Grid container spacing={1} key={agreement.name}>
       <Grid item xs={6}>
@@ -29,7 +31,8 @@ const ProjectDetailsModal = ({ open, onClose, project }) => {
     { name: 'DSA', checked: project?.agreements.dsa.checked, dateTime: project?.agreements.dsa.dateTime },
     { name: 'Non-Solicitation', checked: project?.agreements.nonSolicitation.checked, dateTime: project?.agreements.nonSolicitation.dateTime },
   ];
-const activeStep = 3
+const activeStep = project?.projectStatus=="0"?  project?.projectStatus+1: project?.projectStatus
+
 const steps = [
   { label: 'Initial', icon: <HomeIcon /> },
   { label: 'Planning', icon: <ScheduleIcon /> },
@@ -37,6 +40,7 @@ const steps = [
   { label: 'Completed', icon: <CheckCircleIcon /> },
 ];
   return (
+    { name: 'MSA', checked: project?.agreements.msa.checked, dateTime: project?.agreements.msa.dateTime },
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
       <DialogTitle>Project Details</DialogTitle>
       <DialogContent>

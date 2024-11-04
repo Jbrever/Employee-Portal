@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
+
   Button,
   MenuItem,
   Select,
@@ -16,10 +9,10 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material';
-import { Visibility, Edit, Delete, Pause, Add } from '@mui/icons-material';
-import { getAllProjects, deleteProject } from '@/_services/services_api';
+import { Add } from '@mui/icons-material';
+import { getAllProjects, deleteProject ,updateProjectStatus} from '@/_services/services_api';
 import { ProjectListTable } from '@/components/utils/table';
-import ProjectDetailsModal from '@/components/utils/ProjectDetailsModal'; // Import the modal component
+import ProjectDetailsModal from '@/components/utils/ProjectDetailsModal'; 
 import { useRouter } from 'next/navigation'; 
 import * as XLSX from 'xlsx';
 import toast from 'react-hot-toast';
@@ -68,7 +61,7 @@ const MyTable = () => {
     setStatusFilter(value);
 
     if (value) {
-      const filtered = projectList.filter(project => project.projectStatus == value);
+      const filtered = projectList.filter(project => project.projectStatus === value);
       setFilteredProjects(filtered);
     } else {
       setFilteredProjects(projectList);
@@ -79,81 +72,103 @@ const MyTable = () => {
     setSelectedProject(project);
     setModalOpen(true);
   };
+
   const handleDeleteProject = async (project) => {
     try {
-      const response = await deleteProject(project._id); // Assuming deleteProject returns a promise
+      const response = await deleteProject(project._id);
       if (response.success) {
-        toast.success(response.message); // Show success toast
+        toast.success(response.message);
       } else {
-        toast.error(response.message); // Show error toast if deletion fails
+        toast.error(response.message);
       }
     } catch (error) {
-      toast.error('An error occurred while deleting the project'); // Handle network or other errors
+      toast.error('An error occurred while deleting the project');
     }
   };
+
   const handleCloseModal = () => {
     setModalOpen(false);
     setSelectedProject(null);
   };
-const handleStatusChange= (e) => {
-  console.log('Change status', e.target);
-  // Update project status API call here
-}
+
+  const handleStatusChange = (event, project) => {
+    const newStatus = event.target.value;
+    // Update the project status in your state or backend
+    console.log(`Changing status of project ${project._id} to ${newStatus}`);
+    const payload={
+      "id":project._id,
+      "projectStatus":newStatus
+  }
+  updateProjectStatus(payload)
+  };
+
   return (
     <div className='px-4'>
-         {!loading ?(
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-        <FormControl variant="outlined" style={{ minWidth: 120 }}>
-          <InputLabel>Status</InputLabel>
-          <Select
-            value={statusFilter}
-            onChange={handleFilterChange}
-            label="Status"
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="1">Running</MenuItem>
-            <MenuItem value="2">Hold</MenuItem>
-            <MenuItem value="3">Completed</MenuItem>
-            <MenuItem value="4">Not close</MenuItem>
-          </Select>
-        </FormControl>
+      {!loading ? (
+        <div>
+          <div className='flex items-center justify-between'>
+            <FormControl variant="outlined" style={{ minWidth: 120 }}>
+              <InputLabel>Status</InputLabel>
+              <Select
+                value={statusFilter}
+                onChange={handleFilterChange}
+                className='py-0 '
+                label="Status"
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="1">Running</MenuItem>
+                <MenuItem value="2">Hold</MenuItem>
+                <MenuItem value="3">Completed</MenuItem>
+                <MenuItem value="4">Not close</MenuItem>
+              </Select>
+            </FormControl>
 
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Button 
-            variant="contained" 
-            color="primary" 
-            size="small"
-            onClick={handleAddProject}
-            startIcon={<Add />}
-            style={{ marginLeft: '16px' }}
-          >
-            Add New Project
-          </Button>
+            <div className=''>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                size="small"
+                onClick={handleAddProject}
+                startIcon={<Add />}
+              
+              >
+                Add New Project
+              </Button>
+              
+              <Button 
+                variant="contained" 
+                color="primary" 
+                size="small"
+                onClick={handleDownload}
+              className='ms-2'
+              >
+                Download Excel
+              </Button>
+            </div>
+          </div>
           
-          <Button 
-            variant="contained" 
-            color="primary" 
-            size="small"
-            onClick={handleDownload}
-            style={{ marginLeft: '16px' }}
-          >
-            Download Excel
-          </Button>
-        </div>
-      </div>
-         ):""}
-      {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <CircularProgress />
+          {filteredProjects.length > 0 ? (
+            <ProjectListTable 
+              projectData={filteredProjects} 
+              onViewDetails={handleViewDetails} 
+              onDeleteProject={handleDeleteProject} 
+              handleStatusChange={handleStatusChange} 
+              value={currentProjectStatus}
+              project={selectedProject}
+            />
+          ) : (
+            <div className='w-full' style={{ textAlign: 'center', marginTop: '20px' }}>
+              <Typography variant="body1" color="textSecondary">
+                No data available
+              </Typography>
+            </div>
+          )}
         </div>
       ) : (
-        filteredProjects.length > 0 ? (
-          <ProjectListTable projectData={filteredProjects} onViewDetails={handleViewDetails} onDeleteProject={handleDeleteProject} handleStatusChange={handleStatusChange} value={currentProjectStatus}/>
-        ) : (
-          <Typography variant="body1" color="textSecondary">
-            No data available
-          </Typography>
-        )
+        <div className='w-100 h-100  justify-center flex m-auto h-100vh items-center'>
+          <CircularProgress />
+
+        </div>
       )}
 
       <ProjectDetailsModal

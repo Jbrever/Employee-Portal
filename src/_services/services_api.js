@@ -79,3 +79,16 @@ export async function deleteProject(projectId) {
     return null;
   }
 }
+
+
+export async function updateProjectStatus(params) {
+  try {
+    // Construct the URL by appending the project ID
+    const url = process.env.UPDATE_STATUS;
+    const response = await apiHandler('POST', url, params);
+    return response;
+  } catch (err) {
+    console.error("Error deleting project:", err);
+    return null;
+  }
+}

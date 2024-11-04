@@ -205,7 +205,7 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
     <Table sx={{ borderCollapse: 'collapse', width: '100%' }}>
       <TableHead>
         <TableRow>
-          {['Project Name', 'Type', 'Client Name', 'Contact Person', 'Start Date', 'Assigned To', 'Contact No.',  'Status','Change status', 'Actions'].map((header) => (
+          {['Project Name', 'Type', 'Client Name', 'Contact Person', 'Start Date', 'Assigned To', 'Contact No.','Change status', 'Actions'].map((header) => (
             <TableCell align="right" key={header}>
               <Typography variant="body2" className="text-sm">{header}</Typography>
             </TableCell>
@@ -222,16 +222,16 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
             <TableCell align="right">{moment(project.resources[0].startDate).format("DD-MM-YYYY")}</TableCell>
             <TableCell align="right">{project.resources[0].assignedTo}</TableCell>
             <TableCell align="right">{project.contactNumber}</TableCell>
-            <TableCell align="right">{project.interested ? 'Interested' : 'Not Interested'}</TableCell>
+            {/* <TableCell align="right">{project.interested ? 'Interested' : 'Not Interested'}</TableCell> */}
             <TableCell align="right">
             <FormControl variant="outlined" size="small" fullWidth>
       <InputLabel id="view-label">View</InputLabel>
       <Select
-        labelId="view-label"
-        value={value}
-        onChange={handleStatusChange}
-        label={options[value]}
-      >
+  labelId="view-label"
+  value={value}
+  onChange={(event) => handleStatusChange(event,project)}
+  label={options[value]}
+>
         <MenuItem value={1} >Initial</MenuItem>
         <MenuItem value={2}>Planning</MenuItem>
         <MenuItem value={3}>Running</MenuItem>
