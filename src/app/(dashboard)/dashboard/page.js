@@ -135,19 +135,22 @@ const EmployeeDashboard = () => {
     <Box sx={{ p: 3, bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       {/* Welcome Card */}
       <Card sx={{ 
-        mb: 3, 
-        background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
-        color: 'white'
-      }}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
-            Welcome back, {employeeName}! 👋
-          </Typography>
-          <Typography variant="subtitle1">
-            Here's what's happening in your workplace today:
-          </Typography>
-        </CardContent>
-      </Card>
+  mb: 3, 
+  background: 'linear-gradient(135deg, #4caf50 30%, #81c784 90%)', // Green gradient
+  color: 'white',
+  boxShadow: 3, // Add some shadow for depth
+  borderRadius: 2, // Rounded corners
+}}>
+  <CardContent>
+    <Typography variant="h5" gutterBottom>
+      Welcome {employeeName}! 👋
+    </Typography>
+    <Typography variant="subtitle1">
+      Here's what's happening in your workplace today:
+    </Typography>
+  </CardContent>
+</Card>
+
 
       {/* Password Change Dialog */}
       <Dialog open={showPasswordModal} onClose={() => setShowPasswordModal(false)}>
