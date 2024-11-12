@@ -13,7 +13,7 @@ import {
   faProjectDiagram,
   faCalendarAlt
 } from '@fortawesome/free-solid-svg-icons';
-
+import toast, { Toaster } from 'react-hot-toast';
 const menuOptions = [
   { label: 'Dashboard', icon: faTachometerAlt, url: '/dashboard' },
   { label: 'HRIS', icon: faBuilding, url: '#', hasDropdown: true },
@@ -176,6 +176,7 @@ export default function RootLayout({ children }) {
             {children}
           </div>
         </div>
+        <Toaster/>
       </main>
     </div>
   );

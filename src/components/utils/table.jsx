@@ -219,26 +219,41 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
             <TableCell align="right">{project.projectType}</TableCell>
             <TableCell align="right">{project.clientName}</TableCell>
             <TableCell align="right">{project.contactPerson}</TableCell>
-            <TableCell align="right">{moment(project.resources[0].startDate).format("DD-MM-YYYY")}</TableCell>
-            <TableCell align="right">{project.resources[0].assignedTo}</TableCell>
+            {/* <TableCell align="right">{moment(project.resources[0].startDate).format("DD-MM-YYYY")}</TableCell> */}
+            <TableCell align="right">
+              {project.resources[0].startDate
+                 ? moment(project.resources[0].startDate).format("DD-MM-YYYY")
+                 : 'N/A' 
+              }
+            </TableCell>
+            <TableCell align="right">
+              {
+              project.resources[0].assignedTo.map((item)=>{
+                if(typeof(item) == 'string'){
+                  return '---';
+                }else return item.label + ' , ';
+              })
+              }
+              {/* hello hello */}
+            </TableCell>
             <TableCell align="right">{project.contactNumber}</TableCell>
             {/* <TableCell align="right">{project.interested ? 'Interested' : 'Not Interested'}</TableCell> */}
-            <TableCell align="right">
-            <FormControl variant="outlined" size="small" fullWidth>
-      <InputLabel id="view-label">View</InputLabel>
-      <Select
-  labelId="view-label"
-  value={value}
-  onChange={(event) => handleStatusChange(event,project)}
-  label={options[value]}
->
-        <MenuItem value={1} >Initial</MenuItem>
-        <MenuItem value={2}>Planning</MenuItem>
-        <MenuItem value={3}>Running</MenuItem>
-        <MenuItem value={4}>Completed</MenuItem>
-        <MenuItem value={5}>Hold Not Complete</MenuItem>
-      </Select>
-    </FormControl>
+            <TableCell align="right"> 
+             <FormControl variant="outlined" size="small" fullWidth>
+               <InputLabel id="view-label">Initial</InputLabel>
+               <Select
+                 labelId="view-label"
+                 value={project.status}
+                 onChange={(event) =>handleStatusChange(event, project)}
+                 label={options[project.status]}
+                  >
+                <MenuItem value={1}>Initial</MenuItem>
+                <MenuItem value={2}>Planning</MenuItem>
+                <MenuItem value={3}>Running</MenuItem>
+                <MenuItem value={4}>Completed</MenuItem>
+                <MenuItem value={5}>Hold Not Complete</MenuItem>
+               </Select>
+            </FormControl>
             </TableCell>
             <TableCell align="right" sx={{ border: '1px solid #ddd', width: '120px' }}>
               <div className="flex justify-around">

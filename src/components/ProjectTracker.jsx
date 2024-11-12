@@ -59,9 +59,9 @@ const MyTable = () => {
   const handleFilterChange = (event) => {
     const value = event.target.value;
     setStatusFilter(value);
-
+console.log("projectList",projectList, value)
     if (value) {
-      const filtered = projectList.filter(project => project.projectStatus === value);
+      const filtered = projectList.filter(project => project.projectStatus == value);
       setFilteredProjects(filtered);
     } else {
       setFilteredProjects(projectList);
@@ -92,6 +92,7 @@ const MyTable = () => {
   };
 
   const handleStatusChange = (event, project) => {
+    
     const newStatus = event.target.value;
     // Update the project status in your state or backend
     console.log(`Changing status of project ${project._id} to ${newStatus}`);
@@ -116,10 +117,11 @@ const MyTable = () => {
                 label="Status"
               >
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value="1">Running</MenuItem>
-                <MenuItem value="2">Hold</MenuItem>
-                <MenuItem value="3">Completed</MenuItem>
-                <MenuItem value="4">Not close</MenuItem>
+                <MenuItem value="1">Yet to start</MenuItem>
+                <MenuItem value="2">Planning</MenuItem>
+                <MenuItem value="3">Running</MenuItem>
+                <MenuItem value="4">Completed</MenuItem>
+                <MenuItem value="5">Not completed </MenuItem>
               </Select>
             </FormControl>
 
@@ -143,11 +145,11 @@ const MyTable = () => {
               className='ms-2'
               >
                 Download Excel
-              </Button>
+              </Button> 
             </div>
           </div>
-          
-          {filteredProjects.length > 0 ? (
+          {console.log("filteredProjectsfilteredProjects",filteredProjects)}
+          {filteredProjects?.length > 0 ? (
             <ProjectListTable 
               projectData={filteredProjects} 
               onViewDetails={handleViewDetails} 

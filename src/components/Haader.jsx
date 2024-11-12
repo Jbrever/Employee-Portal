@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <div className="flex items-center justify-between w-full">
-      <h1 className="text-xl font-bold">Employee Management</h1>
+      <h1 className="text-xl font-bold text-white">Employee Management</h1>
       <div className="relative">
         <button onClick={toggleDropdown} className="flex items-center focus:outline-none">
           <FontAwesomeIcon icon={faUserCircle} className="text-2xl" />
