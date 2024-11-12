@@ -28,12 +28,12 @@ export default function MultipleSelectChipy({assignTo}){
     }
     fetchEmployeeData();
   },[])
-  // const employee = [
-  //   { value: '123', label: 'juber' },
-  //   { value: '343', label: 'manohar' },
-  //   { value: '543', label: 'ganesh' },
-  //   { value: '010', label: 'john' },
-  // ]
+  const h = [
+    { value: '123', label: 'juber' },
+    { value: '343', label: 'manohar' },
+    { value: '543', label: 'ganesh' },
+    { value: '010', label: 'john' },
+  ]
   const customStyles = {
     option: (provided, state) => ({
       ...provided,

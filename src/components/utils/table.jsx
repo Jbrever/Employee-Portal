@@ -240,7 +240,7 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
             {/* <TableCell align="right">{project.interested ? 'Interested' : 'Not Interested'}</TableCell> */}
             <TableCell align="right"> 
              <FormControl variant="outlined" size="small" fullWidth>
-               <InputLabel id="view-label">Initial</InputLabel>
+               <InputLabel id="view-label">view</InputLabel>
                <Select
                  labelId="view-label"
                  value={project.status}
