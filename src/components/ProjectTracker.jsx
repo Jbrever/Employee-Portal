@@ -116,10 +116,11 @@ const MyTable = () => {
                 label="Status"
               >
                 <MenuItem value="">All</MenuItem>
-                <MenuItem value="1">Running</MenuItem>
-                <MenuItem value="2">Hold</MenuItem>
-                <MenuItem value="3">Completed</MenuItem>
-                <MenuItem value="4">Not close</MenuItem>
+                <MenuItem value="1">Yet to start</MenuItem>
+                <MenuItem value="2">Planing</MenuItem>
+                <MenuItem value="3">Running</MenuItem>
+                <MenuItem value="4">Completed</MenuItem>
+                <MenuItem value="5">Hold</MenuItem>
               </Select>
             </FormControl>
 

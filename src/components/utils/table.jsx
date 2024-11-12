@@ -21,7 +21,7 @@ export const UserTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((user) => (
+          {data?.map((user) => (
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.name}</TableCell>
@@ -49,7 +49,7 @@ export const PrrojectTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((project) => (
+          {data?.map((project) => (
             <TableRow key={project.id}>
               <TableCell>{project.name}</TableCell>
               <TableCell>{moment(project.startDate).format("DD-MM-YYYY")}</TableCell>
@@ -76,7 +76,7 @@ export const LeaveTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((leave) => (
+          {data?.map((leave) => (
             <TableRow key={leave.id}>
               <TableCell>{leave.name}</TableCell>
               <TableCell>{moment(leave.startDate).format("DD-MM-YYYY")}</TableCell>
@@ -140,7 +140,7 @@ export const EmployeeTable = ({ data }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((user) => (
+          {data?.map((user) => (
             <TableRow key={user.id}>
               <TableCell>
                 <input type="checkbox" />
@@ -213,7 +213,7 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
         </TableRow>
       </TableHead>
       <TableBody>
-        {projectData.map((project, index) => (
+        {projectData?.map((project, index) => (
           <TableRow key={project._id} sx={{ background: index % 2 === 0 ? '#f9f9f9' : 'white' }}>
             <TableCell>{project.projectName}</TableCell>
             <TableCell align="right">{project.projectType}</TableCell>
@@ -232,11 +232,11 @@ export const ProjectListTable = ({ projectData, onViewDetails, onDeleteProject,h
   onChange={(event) => handleStatusChange(event,project)}
   label={options[value]}
 >
-        <MenuItem value={1} >Initial</MenuItem>
-        <MenuItem value={2}>Planning</MenuItem>
-        <MenuItem value={3}>Running</MenuItem>
-        <MenuItem value={4}>Completed</MenuItem>
-        <MenuItem value={5}>Hold Not Complete</MenuItem>
+<MenuItem value="1">Yet to start</MenuItem>
+                <MenuItem value="2">Planing</MenuItem>
+                <MenuItem value="3">Running</MenuItem>
+                <MenuItem value="4">Completed</MenuItem>
+                <MenuItem value="5">Hold</MenuItem>
       </Select>
     </FormControl>
             </TableCell>
