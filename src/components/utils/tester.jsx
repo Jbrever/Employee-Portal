@@ -1098,7 +1098,7 @@ export default function Dashboard() {
     const percentageOf10Hours = (timeString) => {
         const [hours, minutes, seconds] = timeString.split(':').map(Number);
         const totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
-        const tenHoursInSeconds = 10 * 60 * 60; // 36,000 seconds
+        const tenHoursInSeconds = 9 * 60 * 60; // 36,000 seconds
         const percentage = (totalSeconds / tenHoursInSeconds) * 100;
         return percentage;
     };
