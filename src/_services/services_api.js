@@ -67,7 +67,6 @@ export async function createProject(params) {
   }
 }
 
-
 export async function deleteProject(projectId) {
   try {
     // Construct the URL by appending the project ID

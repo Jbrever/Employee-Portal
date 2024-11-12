@@ -76,7 +76,11 @@ console.log("projectList",projectList, value)
   const handleDeleteProject = async (project) => {
     try {
       const response = await deleteProject(project._id);
-      if (response.success) {
+      console.log("responseresponse",response);
+      if (response.status == 1) {
+        const updatedProjects = projectList.filter(item => item._id !== project._id);
+        setProjectList(updatedProjects);
+        setFilteredProjects(updatedProjects);
         toast.success(response.message);
       } else {
         toast.error(response.message);
@@ -92,10 +96,16 @@ console.log("projectList",projectList, value)
   };
 
   const handleStatusChange = (event, project) => {
-    
+    const options = {
+      1: "Initial",
+      2: "Planning",
+      3: "Running",
+      4: "Completed",
+      5: "Hold Not Complete",
+    };
     const newStatus = event.target.value;
-    // Update the project status in your state or backend
-    console.log(`Changing status of project ${project._id} to ${newStatus}`);
+    toast.success(`Status changed to ${options[newStatus]}`);
+    // console.log(`Changing status of project ${project._id} to ${newStatus}`);
     const payload={
       "id":project._id,
       "projectStatus":newStatus
@@ -148,7 +158,7 @@ console.log("projectList",projectList, value)
               </Button> 
             </div>
           </div>
-          {console.log("filteredProjectsfilteredProjects",filteredProjects)}
+          {/* {console.log("filteredProjectsfilteredProjects",filteredProjects)} */}
           {filteredProjects?.length > 0 ? (
             <ProjectListTable 
               projectData={filteredProjects} 
