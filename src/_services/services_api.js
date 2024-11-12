@@ -1,4 +1,5 @@
 import { fetcher, apiHandler } from '@/_helper/apiBase';
+import axios from 'axios';
 
 export async function loginAPIMethod(params) {
   
@@ -92,3 +93,50 @@ export async function updateProjectStatus(params) {
     return null;
   }
 }
+
+
+export const checkInEmployee = async (data, config = {}) => {
+  return axios.post('https://1pqbgqn7-4000.inc1.devtunnels.ms/Employee/checkIn', data, config);
+};
+
+export const checkOutEmployee = async (data, config = {}) => {
+  return axios.post('https://1pqbgqn7-4000.inc1.devtunnels.ms/Employee/checkOut', data, config);
+};
+// export const checkInEmployee = async ({ checkInTime, token }) => {
+//   try {
+//       const response = await axios.post(
+//           'https://1pqbgqn7-4000.inc1.devtunnels.ms/Employee/checkIn', 
+//           { checkInTime },
+//           {
+//               headers: {
+//                   'auth-token': `Bearer ${token}`,
+//                   'Content-Type': 'application/json'
+//               }
+//           }
+//       );
+//       return response.data;  // Return the response data
+//   } catch (error) {
+//       console.error('Error during check-in:', error);
+//       throw error;  // Rethrow error to handle it in the component
+//   }
+// };
+
+// Check-Out API call with headers
+// export const checkOutEmployee = async ({ checkOutTime, token }) => {
+//   try {
+//       const response = await axios.post(
+//           'https://1pqbgqn7-4000.inc1.devtunnels.ms/Employee/checkOut', 
+//           { checkOutTime },
+//           {
+//               headers: {
+//                   'auth-token': `${token}`,
+//                   'Content-Type': 'application/json'
+//               }
+//           }
+//       );
+//       return response.data;  // Return the response data
+//   } catch (error) {
+//       console.error('Error during check-out:', error);
+//       throw error;  // Rethrow error to handle it in the component
+//   }
+// };

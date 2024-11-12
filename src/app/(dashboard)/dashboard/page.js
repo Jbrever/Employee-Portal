@@ -31,7 +31,9 @@ import {
   ListItemText,
   Chip
 } from '@mui/material';
+import Tester from '@/components/utils/tester';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import TimerComponent from '@/components/checkIn';
 import {
   People as PeopleIcon,
   Notifications as NotificationsIcon,
@@ -269,6 +271,11 @@ const EmployeeDashboard = () => {
           </Card>
         </Grid>
       </Grid>
+
+  <Grid>
+  {/* <TimerComponent/> */}
+  <Tester/>
+  </Grid>
 
       <Grid container spacing={3}>
         {/* Employee List */}
